@@ -1,0 +1,12 @@
+steps:
+    # build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/notesapp-261216/notesapp', '.']
+    # push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/notesapp-261216/notesapp']
+    # Deploy container image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['beta', 'run', 'deploy', 'notesapp', '--image', 'gcr.io/notesapp-261216/notesapp', '--region', 'us-east4','--platform', 'managed']
+  images:
+  - gcr.io/notesapp-261216/notesapp 
