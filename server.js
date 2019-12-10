@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({entended: false}));
 app.use(bodyParser.json());
 
 //init firebase
-const serviceAccount = require('./firebase-key.json');
+const serviceAccount = require('./src/firebase/firebase-key.json');
 
 fbAdmin.initializeApp({
     credential: fbAdmin.credential.cert(serviceAccount),
@@ -39,10 +39,10 @@ app.get('/notes', function(req, res){
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     var docData = doc.data();
-                    docData.docID = doc.id;
+                    docData.docID = doc.id.toString();
                     notes.push(docData);
                 })
-                console.log(notes);
+                //console.log(notes);
                 res.json(notes);
             })
             .catch(err => {
@@ -58,6 +58,49 @@ app.get('/notes', function(req, res){
 
 
 //post new note
+app.post('/newNote', function(req, res){
+    var params = req.body;
+    var docID;
+    try{
+        let addDoc = db.collection('userNotes').doc().set(params)
+                    .then(ref => {
+                        docID = ref.id;
+                    })
+        res.sendStatus(200);
+    }
+    catch(err){
+        console.log(err);
+        res.send(err);
+    }
+})
+
+
+//delete note
+app.delete('/delInv/:docID', function(req, res){
+    try{
+        var docID = req.params.docID;
+        let deleteDoc = db.collection('userNotes').doc(docID).delete();
+        res.sendStatus(200);
+    }
+    catch(err){
+        console.log('error deleting doc: ', err);
+        res.sendStatus(500);
+    }
+})
+
+//update note
+app.put('/updateNote/:docID', function(req, res){
+    try{
+        var docID = req.params.docID;
+        var params = req.body;
+        let updateDoc = db.collection('userNotes').doc(docID).update(params);
+        res.sendStatus(200);
+    }
+    catch(err){
+        console.log(err);
+        res.sendStatus(500);
+    }
+})
 
 
 
