@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer } from '@material-ui/core/';
+import { Drawer, List, ListItem, ListItemText, colors, Button } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
 import RenderList from './RenderList';
 import zIndex from '@material-ui/core/styles/zIndex';
@@ -25,7 +25,32 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        //    paddingTop: theme.spacing(2),
+            paddingTop: theme.spacing(2),
+    },
+    item: {
+        display: 'flex',
+        paddingTop: 5,
+        paddingBottom: 65,
+        maxHeight: '30px',
+
+    },
+    button: {
+        color: colors.blueGrey[800],
+        padding: '5 0 10',
+        justifyContent: 'flex-start',
+        textTransform: 'none',
+        letterSpacing: 0,
+        width: '100%',
+        fontWeight: 'normal',
+        borderBottom: "1px solid rgb(212, 212, 212)",
+        borderTop: "1px solid rgb(212, 212, 212)"
+    },
+    active: {                                                           //change this later to fit notes app
+        backgroundColor: '#cccccc',
+        fontWeight: 'normal',
+    },
+    inline: {
+        display: 'inline',
     },
 });
 
@@ -37,24 +62,71 @@ class Sidebar extends React.Component {
         this.state = {
             notes: notes,
             currentNote: {},
+            pages: []
         }
+        this.noteToggle = this.noteToggle.bind(this);
+        this.renderList = this.renderList.bind(this);
     }
 
-    noteToggle (docID) {
-        this.props.toggleNote(docID);
+    componentWillReceiveProps( someProp ) {
+        console.log(someProp);
+        this.setState({ 
+            notes: someProp.data,
+            currentNote: someProp.currentNote
+         });
+    }
+
+    noteToggle(page) {
+        console.log(page);
+        this.props.toggleNote(page.docID);
+    }
+
+    renderList(pages) {
+        const that = this;
+        return (
+            <List>
+                {pages.map(function (page, key) {
+                    return (
+                        <div key={key}>
+                            <ListItem
+                                className={that.classes.item}
+                                disableGutters
+                                key={key}
+                            >
+                                <Button
+                                    activeclassname={that.classes.active}
+                                    className={that.classes.button}
+                                    key={key}
+                                    onClick={() => that.noteToggle(page)}
+                                >
+                                    <ListItemText
+                                        primary={page.title}
+                                        secondary={page.date + " " + page.body}
+                                        key={key}
+                                    >
+                                    </ListItemText>
+                                </Button>
+                            </ListItem>
+                        </div>
+                    )
+                }
+                )}
+            </List>
+        )
     }
 
     render() {
         //set list items
-        console.log(this.props.data);
         var pages = [];
         var items = this.state.notes;
+        console.log(items);
         if (items) {
             for (var a = 0; a < items.length; a++) {
                 var noteInList = {
                     title: items[a].title,
                     date: items[a].dateTime,
-                    body: items[a].body.substring(0, 12)
+                    body: items[a].body.substring(0, 12),
+                    docID: items[a].docID
                 }
                 pages.push(noteInList);
             }
@@ -69,7 +141,7 @@ class Sidebar extends React.Component {
                     paper: this.classes.drawerPaper,
                 }}
             >
-                <RenderList data={pages} toggleNote={this.noteToggle}/>
+                {this.renderList(pages)}
             </Drawer>
         )
     }

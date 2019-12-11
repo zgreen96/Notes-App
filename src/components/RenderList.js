@@ -1,8 +1,8 @@
 import React from 'react';
 import { List, ListItem, ListItemText, colors, Button } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { withStyles, useTheme } from '@material-ui/core/styles';
 
-const styles = makeStyles(theme => ({
+const styles = theme => ({
     divider: {
         margin: theme.spacing(2, 0),
 
@@ -24,17 +24,17 @@ const styles = makeStyles(theme => ({
         borderBottom: "1px solid rgb(212, 212, 212)",
         borderTop: "1px solid rgb(212, 212, 212)"
     },
-    /*active: {                                                           //change this later to fit notes app
+    active: {                                                           //change this later to fit notes app
         backgroundColor: '#cccccc',
         fontWeight: 'normal',
-    },*/
+    },
     inline: {
         display: 'inline',
     },
 
-}));
+});
 
-const RenderList = (props) => {
+/*const RenderLis = (props) => {
     var pages = props.data;
     const classes = styles();
     //console.log(pages);
@@ -75,6 +75,62 @@ const RenderList = (props) => {
             ))}
         </List>
     )
+}*/
+
+class RenderList extends React.Component{
+    constructor(props) {
+        super(props);
+        this.classes = props.classes;
+        var notes = props.data;
+        this.state = {
+            notes: notes,
+            items: []
+        }
+    }
+
+    componentDidMount(){
+        var pages = this.props.data;
+        var cutItems = cutBody(pages);
+        this.setState({
+            items: cutItems
+        })
+    }
+
+    handleClick (docID) {
+        this.props.toggleNote(docID);
+    }
+
+    render(){
+        var pages = this.state.items;
+        return (
+            <List>
+                {pages.map(page => (
+                    <div key={page.docID}>
+                        <ListItem
+                            className={this.classes.item}
+                            disableGutters
+                            key={page.docID}
+                        >
+                            <Button
+                                activeclassname={this.classes.active}
+                                className={this.classes.button}
+                                key={page.docID}
+                                onClick={() => this.handleClick(page.docID)}
+                            >
+                                <ListItemText
+                                    primary={page.title}
+                                    secondary={page.date + " " + page.body}
+                                >
+                                </ListItemText>
+                            </Button>
+                        </ListItem>
+    
+                    </div>
+
+                ))}
+            </List>
+        )
+    }
 }
 
 const cutBody = (items) => {
@@ -86,4 +142,6 @@ const cutBody = (items) => {
     return items;
 }
 
-export default RenderList;
+
+
+export default (withStyles)(RenderList);

@@ -76,7 +76,7 @@ app.post('/newNote', function(req, res){
 
 
 //delete note
-app.delete('/delInv/:docID', function(req, res){
+app.delete('/deleteNote/:docID', function(req, res){
     try{
         var docID = req.params.docID;
         let deleteDoc = db.collection('userNotes').doc(docID).delete();

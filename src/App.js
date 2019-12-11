@@ -45,17 +45,17 @@ class App extends React.Component {
       if (this.state.notes.length < 1) {
         this.loadNotes();
       }
+      else {
+        return (
+          <div id='root'>
+            <Main data={data} key={'main'} />
+          </div>
+        )
+      }
     }
-    if (data.length > 1) {
-      return (
-        <div id='root'>
-          <Main data={data} key={'main'} />
-        </div>
-      )
-    }
-    else{
-      return <div></div>;
-    }
+
+    return <div>Data Loading...</div>;
+
 
 
 

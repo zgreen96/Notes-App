@@ -1,13 +1,13 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faEdit, faLock, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faEdit, faLock, faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import MenuIcon from '@material-ui/icons/MenuOpen';
 import { withStyles, MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AppBar from '@material-ui/core/AppBar';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import { Toolbar, Typography } from '@material-ui/core';
+import { Toolbar, Typography, Tooltip } from '@material-ui/core';
 
 const muiTheme = createMuiTheme({
     palette: {
@@ -26,7 +26,7 @@ const styles = theme => ({
         background: '#d9d9d9'
     },
     menuButton: {
-       // marginRight: theme.spacing(2),
+        marginRight: theme.spacing(2),
         position: 'relative',
     },
     buttons: {
@@ -48,7 +48,7 @@ const styles = theme => ({
         //},
     },
     searchIcon: {
-    //    width: theme.spacing(7),
+        width: theme.spacing(7),
         height: '100%',
         position: 'absolute',
         pointerEvents: 'none',
@@ -60,8 +60,8 @@ const styles = theme => ({
         color: 'inherit',
     },
     inputInput: {
-    //    padding: theme.spacing(1, 1, 1, 7),
-    //    transition: theme.transitions.create('width'),
+        padding: theme.spacing(1, 1, 1, 7),
+        transition: theme.transitions.create('width'),
         width: '100%',
     /*    [theme.breakpoints.up('md')]: {
             width: 200,
@@ -69,29 +69,34 @@ const styles = theme => ({
     }
 });
 
-
+var API_URL = "http://localhost:8080";
 
 class TopBar extends React.Component {
     constructor(props){
         super(props);
         this.classes = props.classes;
         var notes = props.data;
+        var currentNote = props.currentNote
         this.state = {
           notes: notes,
-          currentNote: {},
+          currentNote: currentNote,
         }
     }
 
-    onDelete = (docID) => {
+    componentWillReceiveProps({ someProp }) {
+        this.setState({ ...this.state, someProp })
+    }
 
+    onDelete = () => {
+        this.props.deleteNote();
     }
 
     onAddNote = () => {
-
+        this.props.addNote();
     }
 
     onLockNote = (docID) => {
-
+        this.props.lockNote();
     }
 
     onSearch = (term) => {
@@ -102,33 +107,107 @@ class TopBar extends React.Component {
         this.props.open();
     }
 
+
     render(){
-        return (
-            <MuiThemeProvider theme={muiTheme}>
-                <div className={this.classes.grow}>
-                    <AppBar className={this.classes.appbar}>
-                        <Toolbar>
-                            <Typography variant='h6' color='inherit' id='title'>
-                                My Notes
-                            </Typography>
-                            <div className={this.classes.buttons}>
-                                <IconButton
-                                    className={this.classes.menuButton}
-                                    color='inherit'
-                                    onClick={() => {this.slider()}}
-                                >
-                                    <MenuIcon fontSize='large' />
-                                </IconButton>
-                                <IconButton className={this.classes.menuButton} color='inherit'>
+        console.log(this.state.currentNote);
+        if(this.state.currentNote.locked === false){
+            return (
+                <MuiThemeProvider theme={muiTheme}>
+                    <div className={this.classes.grow}>
+                        <AppBar className={this.classes.appbar}>
+                            <Toolbar>
+                                <Typography variant='h6' color='inherit' id='title'>
+                                    My Notes
+                                </Typography>
+                                <div className={this.classes.buttons}>
+                                    <IconButton
+                                        className={this.classes.menuButton}
+                                        color='inherit'
+                                        onClick={() => {this.slider()}}
+                                    >
+                                        <Tooltip title='show/hide list' arrow>
+                                            <MenuIcon fontSize='large' />
+                                        </Tooltip>
+                                    </IconButton>
+                                    <IconButton 
+                                        className={this.classes.menuButton} 
+                                        color='inherit'
+                                        onClick={() => {this.onDelete()}}
+                                    >
+                                        
+                                        <FontAwesomeIcon icon={faTrashAlt} title='Delete'/>
+                                    </IconButton>
+                                    <IconButton
+                                        className={this.classes.menuButton}
+                                        color='inherit'
+                                        onClick={() => {this.onAddNote()}}
+                                    >
+                                        
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </IconButton>
+                                    <IconButton 
+                                        className={this.classes.menuButton}
+                                        color='inherit'
+                                        onClick={()=> {this.onLockNote()}}
+                                    >
+                                        <FontAwesomeIcon icon={faLock}/>
+                                    </IconButton>
+                                </div>
+        
+                            </Toolbar>
+                        </AppBar>
+                    </div>
+                </MuiThemeProvider>
+            )
+        }else{
+            return (
+                <MuiThemeProvider theme={muiTheme}>
+                    <div className={this.classes.grow}>
+                        <AppBar className={this.classes.appbar}>
+                            <Toolbar>
+                                <Typography variant='h6' color='inherit' id='title'>
+                                    My Notes
+                                </Typography>
+                                <div className={this.classes.buttons}>
+                                    <IconButton
+                                        className={this.classes.menuButton}
+                                        color='inherit'
+                                        onClick={() => {this.slider()}}
+                                    >
+                                        <MenuIcon fontSize='large' />
+                                    </IconButton>
+                                    <IconButton 
+                                        className={this.classes.menuButton} 
+                                        color='inherit'
+                                        onClick={() => {this.onDelete()}}
+                                    >
     
-                                </IconButton>
-                            </div>
-    
-                        </Toolbar>
-                    </AppBar>
-                </div>
-            </MuiThemeProvider>
-        )
+                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                    </IconButton>
+                                    <IconButton
+                                        className={this.classes.menuButton}
+                                        color='inherit'
+                                        onClick={() => {this.onAddNote()}}
+                                    >
+                                        
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </IconButton>
+                                    <IconButton 
+                                        className={this.classes.menuButton}
+                                        color='inherit'
+                                        onClick={()=> {this.onLockNote()}}
+                                    >
+                                        <FontAwesomeIcon icon={faLockOpen}/>
+                                    </IconButton>
+                                </div>
+        
+                            </Toolbar>
+                        </AppBar>
+                    </div>
+                </MuiThemeProvider>
+            )
+        }
+        
     }
 
 
