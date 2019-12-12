@@ -96,7 +96,7 @@ class Main extends Component {
         }
 
         var items = this.state.notes;
-        items.push (newNote);
+        items.unshift(newNote);
         fetch(API_URL + '/newNote', {
             method: 'POST',
             headers: {
