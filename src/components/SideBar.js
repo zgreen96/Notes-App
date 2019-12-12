@@ -59,10 +59,12 @@ class Sidebar extends React.Component {
         super(props);
         this.classes = props.classes;
         var notes = props.data;
+        var filtered = this.props.filtered;
         this.state = {
             notes: notes,
             currentNote: {},
-            pages: []
+            pages: [],
+            filtered: filtered
         }
         this.noteToggle = this.noteToggle.bind(this);
         this.renderList = this.renderList.bind(this);
@@ -72,7 +74,8 @@ class Sidebar extends React.Component {
         console.log(someProp);
         this.setState({ 
             notes: someProp.data,
-            currentNote: someProp.currentNote
+            currentNote: someProp.currentNote,
+            filtered: someProp.filtered
          });
     }
 
@@ -118,7 +121,7 @@ class Sidebar extends React.Component {
     render() {
         //set list items
         var pages = [];
-        var items = this.state.notes;
+        var items = this.state.filtered;
         console.log(items);
         if (items) {
             for (var a = 0; a < items.length; a++) {

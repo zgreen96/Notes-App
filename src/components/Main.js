@@ -14,7 +14,8 @@ class Main extends Component {
         this.state = ({
             notes: notes,
             openBar: true,
-            currentNote: notes[0]
+            currentNote: notes[0],
+            filtered: notes
         });
         this.deleteNote = this.deleteNote.bind(this);
         this.openSideBar = this.openSideBar.bind(this);
@@ -71,29 +72,54 @@ class Main extends Component {
     }
 
     //add note
-    addNote = () => {
-        var newNote = {
-            title: 'New Note',
-            body: '',
-            dateTime: Date.now(),
-            locked: false,
-            docID: ''
+    addNote = (title) => {
+        var newNote;
+
+        if(title){
+            newNote = {
+                title: title,
+                body: '',
+                dateTime: Date.now(),
+                locked: false,
+                docID: ''
+            }
+        }
+        else{
+            newNote = {
+                title: 'New Note',
+                body: '',
+                dateTime: Date.now(),
+                locked: false,
+                docID: ''
+            }
         }
 
         var items = this.state.notes;
         items.push(newNote);
-        this.setState({
-            notes: items,
-            currentNote: newNote
-        })
-        fetch(API_URL, {
+        fetch(API_URL +'/newNote', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(newNote)
-        });
+        }).then(res => {
+            if(res.ok){
+                console.log('newNote added');
+            }
+            else{
+                throw new Error('something went wrong')
+            }
+        })
+        .then(res => {
+            this.setState({
+                notes: items,
+                currentNote: newNote
+            })
+        })
+        
+
+
 
     }
 
@@ -163,8 +189,10 @@ class Main extends Component {
         })
     }
 
-    search = (term) => {
-
+    search = (items) => {
+        this.setState({
+            filtered: items
+        })
     }
 
     updateNote = (note) => {
@@ -213,7 +241,8 @@ class Main extends Component {
                         open={this.state.openBar}
                         toggleNote={this.pickNote}
                         addNote={this.addNote}
-                        deleteNote={this.deleteNote} />
+                        deleteNote={this.deleteNote}
+                        filtered={this.state.filtered} />
                     <main className='content'>
                         <NotesBody
                             key={'body'}
