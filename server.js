@@ -43,6 +43,15 @@ app.get('/notes', function(req, res){
                     notes.push(docData);
                 })
                 //console.log(notes);
+                for(var a = 0; a < notes.length; a++){
+                    for(var b = 1; b < notes.length; b++){
+                        if(notes[a].dateTime < notes[b]){
+                            var temp = notes[a];
+                            notes[a] = notes[b];
+                            notes[b] = temp;
+                        }
+                    }
+                }
                 res.json(notes);
             })
             .catch(err => {

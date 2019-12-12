@@ -3,6 +3,7 @@ import { Drawer, List, ListItem, ListItemText, colors, Button } from '@material-
 import { withStyles } from '@material-ui/core/styles';
 import RenderList from './RenderList';
 import zIndex from '@material-ui/core/styles/zIndex';
+import moment from 'moment'
 
 const styles = theme => ({
     drawer: {
@@ -70,14 +71,14 @@ class Sidebar extends React.Component {
         this.renderList = this.renderList.bind(this);
     }
 
-    componentWillReceiveProps( someProp ) {
+    /*componentWillReceiveProps( someProp ) {
         console.log(someProp);
         this.setState({ 
             notes: someProp.data,
             currentNote: someProp.currentNote,
             filtered: someProp.filtered
          });
-    }
+    }*/
 
     noteToggle(page) {
         console.log(page);
@@ -86,9 +87,11 @@ class Sidebar extends React.Component {
 
     renderList(pages) {
         const that = this;
+        var items = pages;
+
         return (
             <List>
-                {pages.map(function (page, key) {
+                {items.map(function (page, key) {
                     return (
                         <div key={key}>
                             <ListItem
@@ -104,7 +107,7 @@ class Sidebar extends React.Component {
                                 >
                                     <ListItemText
                                         primary={page.title}
-                                        secondary={page.date + " " + page.body}
+                                        secondary={moment(page.date).format('MM-DD-YY') + " " + page.body}
                                         key={key}
                                     >
                                     </ListItemText>
@@ -121,8 +124,9 @@ class Sidebar extends React.Component {
     render() {
         //set list items
         var pages = [];
-        var items = this.state.filtered;
+        var items = this.props.filtered;
         console.log(items);
+        console.log('State: ', this.state.filtered);
         if (items) {
             for (var a = 0; a < items.length; a++) {
                 var noteInList = {

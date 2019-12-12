@@ -77,20 +77,12 @@ class TopBar extends React.Component {
         this.classes = props.classes;
         var notes = props.data;
         var currentNote = props.currentNote
-        this.state = {
-            notes: notes,
-            currentNote: currentNote,
-            filtered: []
-        }
         this.onDelete = this.onDelete.bind(this);
         this.onAddNote = this.onAddNote.bind(this);
         this.onLockNote = this.onLockNote.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.slider = this.slider.bind(this);
-    }
-
-    componentWillReceiveProps({ someProp }) {
-        this.setState({ ...this.state, someProp })
+        this.runScript = this.runScript.bind(this);
     }
 
     onDelete = () => {
@@ -107,15 +99,15 @@ class TopBar extends React.Component {
 
     onSearch = (event) => {
         var term = event.target.value;
+        console.log(term);
         var items = [];
         var newList = [];
         if(term !== ""){
             items = this.props.data;
             newList = items.filter(item => {
-                
                 return (item.title.toLowerCase().includes(term) || item.body.toLowerCase().includes(term));
             })
-
+            console.log(newList);
         }
         else{
             newList = this.props.data
@@ -130,10 +122,16 @@ class TopBar extends React.Component {
         this.props.open();
     }
 
+    runScript(e){
+        if(e.which === 13 || e.keyCode === 13){
+            this.props.addNote(e.target.value)
+        }
+    }
+
 
     render() {
-        console.log(this.state.currentNote);
-        if (this.state.currentNote.locked === false) {
+        console.log(this.props.currentNote);
+        if (this.props.currentNote.locked === false) {
             return (
                 <MuiThemeProvider theme={muiTheme}>
                     <div className={this.classes.grow}>
@@ -188,6 +186,7 @@ class TopBar extends React.Component {
                                         }}
                                         inputProps={{ 'aria-label': 'search' }}
                                         onChange={this.onSearch}
+                                        onKeyPress={this.runScript} 
                                     />
                                 </div>
 

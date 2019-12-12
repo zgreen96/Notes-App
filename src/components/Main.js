@@ -29,38 +29,38 @@ class Main extends Component {
     //delete note
     deleteNote() {
         var items = [];
-        if (this.state.currentNote) {
-            if (this.state.currentNote.locked === false) {
-                
-                for (var a = 0; a < this.state.notes.length; a++) {
-                    if (this.state.notes[a].docID !== this.state.currentNote.docID) {
-                        items.push(this.state.notes[a]);
-                    }
+        if (this.state.currentNote.locked === false) {
+
+            for (var a = 0; a < this.state.notes.length; a++) {
+                if (this.state.notes[a].docID !== this.state.currentNote.docID) {
+                    items.push(this.state.notes[a]);
                 }
+            }
 
-                var id = this.state.currentNote.docID;
-                console.log(id);
-                fetch(API_URL + '/deleteNote/' + id, { method: 'DELETE' })
-                    .then(res => {
-                        if (res.ok) {
-                            console.log('delete succesful');
+            var id = this.state.currentNote.docID;
+            console.log(id);
+            fetch(API_URL + '/deleteNote/' + id, { method: 'DELETE' })
+                .then(res => {
+                    if (res.ok) {
+                        console.log('delete succesful');
 
-                        }
-                        else {
-                            throw new Error('something went wrong')
-                        }
+                    }
+                    else {
+                        throw new Error('something went wrong')
+                    }
+                })
+                .then(res => {
+                    this.setState({
+                        notes: items,
+                        currentNote: items[0] || {},
+                        filtered: items
                     })
-                    .then(res => {
-                        this.setState({
-                            notes: items,
-                            currentNote: {}
-                        })
-                    });
-            }
-            else{
-                alert('Please select an unlocked note or unlock this one to continue')
-            }
+                });
         }
+        else {
+            alert('Please select an unlocked note or unlock this one to continue')
+        }
+        this.forceUpdate();
     }
 
     //open side bar
@@ -75,28 +75,28 @@ class Main extends Component {
     addNote = (title) => {
         var newNote;
 
-        if(title){
+        if (title) {
             newNote = {
                 title: title,
                 body: '',
                 dateTime: Date.now(),
                 locked: false,
-                docID: ''
+                docID: '1234'
             }
         }
-        else{
+        else {
             newNote = {
                 title: 'New Note',
                 body: '',
                 dateTime: Date.now(),
                 locked: false,
-                docID: ''
+                docID: '1234'
             }
         }
 
         var items = this.state.notes;
-        items.push(newNote);
-        fetch(API_URL +'/newNote', {
+        items.unshift(newNote);
+        fetch(API_URL + '/newNote', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -104,20 +104,21 @@ class Main extends Component {
             },
             body: JSON.stringify(newNote)
         }).then(res => {
-            if(res.ok){
+            if (res.ok) {
                 console.log('newNote added');
             }
-            else{
+            else {
                 throw new Error('something went wrong')
             }
         })
-        .then(res => {
-            this.setState({
-                notes: items,
-                currentNote: newNote
+            .then(res => {
+                this.setState({
+                    notes: items,
+                    currentNote: newNote,
+                    filtered: items
+                })
             })
-        })
-        
+
 
 
 
@@ -126,23 +127,23 @@ class Main extends Component {
     //lock note
     lockNote = () => {
         var note = this.state.currentNote;
-        var items=[];
+        var items = [];
 
-        for(var i = 0; i < this.state.notes.length; i++){
+        for (var i = 0; i < this.state.notes.length; i++) {
             if (this.state.notes[i].docID !== this.state.currentNote.docID) {
                 items.push(this.state.notes[i]);
             }
         }
 
-        if(this.state.currentNote){
-            if(this.state.currentNote.locked === false){
+        if (this.state.currentNote) {
+            if (this.state.currentNote.locked === false) {
                 note.locked = true;
-                items.push(note);
+                items.unshift(note);
                 fetch(API_URL + '/updateNote/' + note.docID, {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',
-                        'Content-Type':'application/json',
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(note)
                 }).then(res => {
@@ -152,20 +153,21 @@ class Main extends Component {
                     })
                 })
             }
-            else{
+            else {
                 note.locked = false;
-                items.push(note);
+                items.unshift(note);
                 fetch(API_URL + '/updateNote/' + note.docID, {
                     method: 'PUT',
                     headers: {
                         Accept: 'application/json',
-                        'Content-Type':'application/json',
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(note)
                 }).then(res => {
                     this.setState({
                         notes: items,
-                        currentNote: note
+                        currentNote: note,
+                        filtered: items
                     })
                 })
             }
@@ -196,8 +198,8 @@ class Main extends Component {
     }
 
     updateNote = (note) => {
-        var items =[];
-        for(var i = 0; i < this.state.notes.length; i++){
+        var items = [];
+        for (var i = 0; i < this.state.notes.length; i++) {
             if (this.state.notes[i].docID !== this.state.currentNote.docID) {
                 items.push(this.state.notes[i]);
             }
@@ -208,13 +210,14 @@ class Main extends Component {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type':'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(note)
         }).then(res => {
             this.setState({
                 notes: items,
-                currentNote: note
+                currentNote: note,
+                filtered: items
             })
         })
 
@@ -223,6 +226,7 @@ class Main extends Component {
     render() {
         console.log(this.state.notes || 0);
         console.log(this.state.currentNote);
+        var notes = this.state.notes
         if (this.state.notes) {
             return (
                 <div className='root'>
@@ -235,14 +239,15 @@ class Main extends Component {
                         open={this.openSideBar}
                         search={this.search}
                         currentNote={this.state.currentNote} />
-                    <SideBar key={'side'}
-                        data={this.state.notes}
+                    <SideBar key={this.state.notes.length}
+                        data={notes}
                         currentNote={this.state.currentNote}
                         open={this.state.openBar}
                         toggleNote={this.pickNote}
                         addNote={this.addNote}
                         deleteNote={this.deleteNote}
-                        filtered={this.state.filtered} />
+                        filtered={this.state.filtered}
+                    />
                     <main className='content'>
                         <NotesBody
                             key={'body'}

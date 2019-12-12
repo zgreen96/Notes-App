@@ -34,8 +34,9 @@ class NotesBody extends React.Component {
         this.state = {
             note: note
         }
-        this.handleChange = this.handleChange.bind(this);
+        this.handleBodyChange = this.handleBodyChange.bind(this);
         this.renderNote = this.renderNote.bind(this);
+        this.handleTitleChange = this.handleTitleChange.bind(this);
     }
 
     componentWillReceiveProps(someProp) {
@@ -46,9 +47,20 @@ class NotesBody extends React.Component {
 
     }
 
-    handleChange(event) {
+    handleBodyChange(event) {
         var currentNote = this.state.note;
         currentNote.body = event.target.value
+        currentNote.dateTime = Date.now()
+        this.setState({
+            note: currentNote
+        })
+        this.props.handleChange(currentNote);
+    }
+
+    handleTitleChange(event) {
+        var currentNote = this.state.note;
+        currentNote.title = event.target.value
+        currentNote.dateTime = Date.now()
         this.setState({
             note: currentNote
         })
@@ -66,7 +78,7 @@ class NotesBody extends React.Component {
                                     className={this.classes.field}
                                     rowsMax="1"
                                     rows='1'
-                                    onChange={() => { this.handleChange() }}
+                                    onChange={ this.handleTitleChange }
                                     InputProps={{
                                         classes: {
                                             input: this.classes.title
@@ -89,7 +101,7 @@ class NotesBody extends React.Component {
                                     multiline
                                     variant='outlined'
                                     value={currentNote.body}
-                                    onChange={this.handleChange}
+                                    onChange={this.handleBodyChange}
                                 />
                             </Grid>
                         </Grid>
