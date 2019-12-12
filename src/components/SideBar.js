@@ -1,8 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemText, colors, Button } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
-import RenderList from './RenderList';
-import zIndex from '@material-ui/core/styles/zIndex';
 import moment from 'moment'
 
 const styles = theme => ({
@@ -80,6 +78,7 @@ class Sidebar extends React.Component {
          });
     }*/
 
+    //toggle current note
     noteToggle(page) {
         console.log(page);
         this.props.toggleNote(page.docID);
@@ -125,8 +124,8 @@ class Sidebar extends React.Component {
         //set list items
         var pages = [];
         var items = this.props.filtered;
-        console.log(items);
-        console.log('State: ', this.state.filtered);
+        //console.log(items);
+        //console.log('State: ', this.state.filtered);
         if (items) {
             for (var a = 0; a < items.length; a++) {
                 var noteInList = {

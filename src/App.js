@@ -15,12 +15,12 @@ class App extends React.Component {
 
   //load notes data
   async componentDidMount() {
-    //API_URL = window.location.protocol + '//' + window.location.hostname + '/notes';
+    API_URL = window.location.protocol + '//' + window.location.hostname + '/notes';
     var items = await this.loadNotes();
   }
 
   async loadNotes() {
-    //API_URL = window.location.protocol + '//' + window.location.hostname + '/notes';
+    API_URL = window.location.protocol + '//' + window.location.hostname + '/notes';
     await fetch(API_URL)
       .then(response => {
         if (response.ok) {

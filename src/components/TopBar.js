@@ -69,7 +69,7 @@ const styles = theme => ({
     }
 });
 
-var API_URL = "http://localhost:8080";
+//var API_URL = "http://localhost:8080";
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -85,21 +85,25 @@ class TopBar extends React.Component {
         this.runScript = this.runScript.bind(this);
     }
 
+    //callback delete
     onDelete = () => {
         this.props.deleteNote();
     }
 
+    //callback add note
     onAddNote = () => {
         this.props.addNote();
     }
 
+    //callback lock note
     onLockNote = (docID) => {
         this.props.lockNote();
     }
 
+    //filter items and callback 
     onSearch = (event) => {
         var term = event.target.value;
-        console.log(term);
+        //console.log(term);
         var items = [];
         var newList = [];
         if(term !== ""){
@@ -107,7 +111,7 @@ class TopBar extends React.Component {
             newList = items.filter(item => {
                 return (item.title.toLowerCase().includes(term) || item.body.toLowerCase().includes(term));
             })
-            console.log(newList);
+            //console.log(newList);
         }
         else{
             newList = this.props.data
@@ -118,10 +122,12 @@ class TopBar extends React.Component {
         this.props.search(newList)
     }
 
+    //drawer callback
     slider = () => {
         this.props.open();
     }
 
+    //on Enter key press, addNote
     runScript(e){
         if(e.which === 13 || e.keyCode === 13){
             this.props.addNote(e.target.value)

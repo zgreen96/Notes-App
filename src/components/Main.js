@@ -4,6 +4,7 @@ import TopBar from './TopBar';
 import SideBar from './SideBar';
 
 var API_URL = "http://localhost:8080";
+API_URL = window.location.protocol + '//' + window.location.hostname
 
 class Main extends Component {
     constructor(props) {
@@ -95,7 +96,7 @@ class Main extends Component {
         }
 
         var items = this.state.notes;
-        items.unshift(newNote);
+        items.push (newNote);
         fetch(API_URL + '/newNote', {
             method: 'POST',
             headers: {
@@ -191,12 +192,14 @@ class Main extends Component {
         })
     }
 
+    //send sideBar the list of filtered items
     search = (items) => {
         this.setState({
             filtered: items
         })
     }
 
+    //updateNote in body and sideBar
     updateNote = (note) => {
         var items = [];
         for (var i = 0; i < this.state.notes.length; i++) {
@@ -204,7 +207,7 @@ class Main extends Component {
                 items.push(this.state.notes[i]);
             }
         }
-        items.push(note);
+        items.unshift(note);
 
         fetch(API_URL + '/updateNote/' + note.docID, {
             method: 'PUT',
