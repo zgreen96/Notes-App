@@ -56,12 +56,16 @@ class Main extends Component {
                         currentNote: items[0] || {},
                         filtered: items
                     })
+                    if(items.length < 1){
+                        this.addNote();
+                    }
                 });
+
         }
         else {
             alert('Please select an unlocked note or unlock this one to continue')
         }
-        this.forceUpdate();
+        
     }
 
     //open side bar
@@ -76,13 +80,20 @@ class Main extends Component {
     addNote = (title) => {
         var newNote;
 
+        //generate random docID
+        var docid = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for(var x = 0; x < 8; x++){
+            docid += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        
         if (title) {
             newNote = {
                 title: title,
                 body: '',
                 dateTime: Date.now(),
                 locked: false,
-                docID: '1234'
+                docID: docid
             }
         }
         else {
@@ -91,7 +102,7 @@ class Main extends Component {
                 body: '',
                 dateTime: Date.now(),
                 locked: false,
-                docID: '1234'
+                docID: docid
             }
         }
 
@@ -119,10 +130,6 @@ class Main extends Component {
                     filtered: items
                 })
             })
-
-
-
-
     }
 
     //lock note
@@ -241,7 +248,8 @@ class Main extends Component {
                         lockNote={this.lockNote}
                         open={this.openSideBar}
                         search={this.search}
-                        currentNote={this.state.currentNote} />
+                        currentNote={this.state.currentNote}
+                        filtered={this.state.filtered} />
                     <SideBar key={this.state.notes.length}
                         data={notes}
                         currentNote={this.state.currentNote}

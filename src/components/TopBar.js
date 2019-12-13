@@ -116,9 +116,6 @@ class TopBar extends React.Component {
         else{
             newList = this.props.data
         }
-        /*this.setState({
-            filtered: newList
-        })*/
         this.props.search(newList)
     }
 
@@ -130,7 +127,9 @@ class TopBar extends React.Component {
     //on Enter key press, addNote
     runScript(e){
         if(e.which === 13 || e.keyCode === 13){
-            this.props.addNote(e.target.value)
+            if(this.props.filtered.length === 0){
+                this.props.addNote(e.target.value)
+            }
         }
     }
 
@@ -138,7 +137,7 @@ class TopBar extends React.Component {
     render() {
         console.log(this.props.currentNote);
         if (this.props.currentNote.locked === false) {
-            return (
+            return (                                                                        //shorten this
                 <MuiThemeProvider theme={muiTheme}>
                     <div className={this.classes.grow}>
                         <AppBar className={this.classes.appbar}>
@@ -204,49 +203,66 @@ class TopBar extends React.Component {
         } else {
             return (
                 <MuiThemeProvider theme={muiTheme}>
-                    <div className={this.classes.grow}>
-                        <AppBar className={this.classes.appbar}>
-                            <Toolbar>
-                                <Typography variant='h6' color='inherit' id='title'>
-                                    My Notes
-                                </Typography>
-                                <div className={this.classes.buttons}>
-                                    <IconButton
-                                        className={this.classes.menuButton}
-                                        color='inherit'
-                                        onClick={() => { this.slider() }}
-                                    >
+                <div className={this.classes.grow}>
+                    <AppBar className={this.classes.appbar}>
+                        <Toolbar>
+                            <Typography variant='h6' color='inherit' id='title'>
+                                My Notes
+                            </Typography>
+                            <div className={this.classes.buttons}>
+                                <IconButton
+                                    className={this.classes.menuButton}
+                                    color='inherit'
+                                    onClick={() => { this.slider() }}
+                                >
+                                    <Tooltip title='show/hide list' arrow>
                                         <MenuIcon fontSize='large' />
-                                    </IconButton>
-                                    <IconButton
-                                        className={this.classes.menuButton}
-                                        color='inherit'
-                                        onClick={() => { this.onDelete() }}
-                                    >
+                                    </Tooltip>
+                                </IconButton>
+                                <IconButton
+                                    className={this.classes.menuButton}
+                                    color='inherit'
+                                    onClick={() => { this.onDelete() }}
+                                >
 
-                                        <FontAwesomeIcon icon={faTrashAlt} />
-                                    </IconButton>
-                                    <IconButton
-                                        className={this.classes.menuButton}
-                                        color='inherit'
-                                        onClick={() => { this.onAddNote() }}
-                                    >
+                                    <FontAwesomeIcon icon={faTrashAlt} title='Delete' />
+                                </IconButton>
+                                <IconButton
+                                    className={this.classes.menuButton}
+                                    color='inherit'
+                                    onClick={() => { this.onAddNote() }}
+                                >
 
-                                        <FontAwesomeIcon icon={faEdit} />
-                                    </IconButton>
-                                    <IconButton
-                                        className={this.classes.menuButton}
-                                        color='inherit'
-                                        onClick={() => { this.onLockNote() }}
-                                    >
-                                        <FontAwesomeIcon icon={faLockOpen} />
-                                    </IconButton>
+                                    <FontAwesomeIcon icon={faEdit} />
+                                </IconButton>
+                                <IconButton
+                                    className={this.classes.menuButton}
+                                    color='inherit'
+                                    onClick={() => { this.onLockNote() }}
+                                >
+                                    <FontAwesomeIcon icon={faLockOpen} />
+                                </IconButton>
+                            </div>
+                            <div className={this.classes.search}>
+                                <div className={this.classes.searchIcon}>
+                                    <SearchIcon />
                                 </div>
+                                <InputBase
+                                    placeholder="Search…"
+                                    classes={{
+                                        root: this.classes.inputRoot,
+                                        input: this.classes.inputInput,
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    onChange={this.onSearch}
+                                    onKeyPress={this.runScript} 
+                                />
+                            </div>
 
-                            </Toolbar>
-                        </AppBar>
-                    </div>
-                </MuiThemeProvider>
+                        </Toolbar>
+                    </AppBar>
+                </div>
+            </MuiThemeProvider>
             )
         }
 
