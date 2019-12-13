@@ -44,7 +44,7 @@ const styles = theme => ({
         borderBottom: "1px solid rgb(212, 212, 212)",
         borderTop: "1px solid rgb(212, 212, 212)"
     },
-    active: {                                                           //change this later to fit notes app
+    active: {                                                     //Can update code to keep button highlighted until new button pressed
         backgroundColor: '#cccccc',
         fontWeight: 'normal',
     },
@@ -69,28 +69,20 @@ class Sidebar extends React.Component {
         this.renderList = this.renderList.bind(this);
     }
 
-    /*componentWillReceiveProps( someProp ) {
-        console.log(someProp);
-        this.setState({ 
-            notes: someProp.data,
-            currentNote: someProp.currentNote,
-            filtered: someProp.filtered
-         });
-    }*/
-
     //toggle current note
     noteToggle(page) {
         console.log(page);
         this.props.toggleNote(page.docID);
     }
 
+    //render notes in list format
     renderList(pages) {
         const that = this;
         var items = pages;
 
         return (
             <List>
-                {items.map(function (page, key) {
+                {items.map(function (page, key) {                                               //map items to make it a dynamic list
                     return (
                         <div key={key}>
                             <ListItem
@@ -124,8 +116,8 @@ class Sidebar extends React.Component {
         //set list items
         var pages = [];
         var items = this.props.filtered;
-        //console.log(items);
-        //console.log('State: ', this.state.filtered);
+        
+        //cut notes' bodies to 12 characters to preview in sidebar
         if (items) {
             for (var a = 0; a < items.length; a++) {
                 var noteInList = {
@@ -151,9 +143,6 @@ class Sidebar extends React.Component {
             </Drawer>
         )
     }
-
-
-
 }
 
 export default withStyles(styles, { withTheme: true })(Sidebar);

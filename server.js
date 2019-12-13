@@ -22,8 +22,6 @@ fbAdmin.initializeApp({
 const db = fbAdmin.firestore();
 var ref = db.collection('userNotes');
 
-
-
 //init landing page
 app.use(express.static(path.join(__dirname, './build')));
 
@@ -42,7 +40,8 @@ app.get('/notes', function(req, res){
                     docData.docID = doc.id.toString();
                     notes.push(docData);
                 })
-                //console.log(notes);
+                
+                //sort notes by edit date
                 for(var a = 0; a < notes.length; a++){
                     for(var b = 1; b < notes.length; b++){
                         if(notes[a].dateTime < notes[b]){
@@ -65,7 +64,6 @@ app.get('/notes', function(req, res){
     }
 })
 
-
 //post new note
 app.post('/newNote', function(req, res){
     var params = req.body;
@@ -83,12 +81,11 @@ app.post('/newNote', function(req, res){
     }
 })
 
-
 //delete note
 app.delete('/deleteNote/:docID', function(req, res){
     try{
         var docID = req.params.docID;
-        let deleteDoc = db.collection('userNotes').doc(docID).delete();
+        let deleteDoc = db.collection('userNotes').doc(docID).delete();         //Need unique IDs to avoid multiple deletes
         res.sendStatus(200);
     }
     catch(err){
@@ -102,7 +99,7 @@ app.put('/updateNote/:docID', function(req, res){
     try{
         var docID = req.params.docID;
         var params = req.body;
-        let updateDoc = db.collection('userNotes').doc(docID).update(params);
+        let updateDoc = db.collection('userNotes').doc(docID).update(params);       
         res.sendStatus(200);
     }
     catch(err){
@@ -110,8 +107,6 @@ app.put('/updateNote/:docID', function(req, res){
         res.sendStatus(500);
     }
 })
-
-
 
 //init server
 const start = async () => {

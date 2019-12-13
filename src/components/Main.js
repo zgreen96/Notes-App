@@ -32,6 +32,7 @@ class Main extends Component {
         var items = [];
         if (this.state.currentNote.locked === false) {
 
+            //addNotes except current to an array
             for (var a = 0; a < this.state.notes.length; a++) {
                 if (this.state.notes[a].docID !== this.state.currentNote.docID) {
                     items.push(this.state.notes[a]);
@@ -40,6 +41,8 @@ class Main extends Component {
 
             var id = this.state.currentNote.docID;
             console.log(id);
+
+            //update DB 
             fetch(API_URL + '/deleteNote/' + id, { method: 'DELETE' })
                 .then(res => {
                     if (res.ok) {
@@ -56,6 +59,7 @@ class Main extends Component {
                         currentNote: items[0] || {},
                         filtered: items
                     })
+                    //Always maintain at least one note in the list
                     if(items.length < 1){
                         this.addNote();
                     }
@@ -63,6 +67,7 @@ class Main extends Component {
 
         }
         else {
+            //note must be unlocked to delete
             alert('Please select an unlocked note or unlock this one to continue')
         }
         
@@ -87,6 +92,7 @@ class Main extends Component {
             docid += characters.charAt(Math.floor(Math.random() * characters.length));
         }
         
+        //create new note
         if (title) {
             newNote = {
                 title: title,
@@ -106,6 +112,7 @@ class Main extends Component {
             }
         }
 
+        //add note to notes and update DB with API call
         var items = this.state.notes;
         items.unshift(newNote);
         fetch(API_URL + '/newNote', {
@@ -137,6 +144,7 @@ class Main extends Component {
         var note = this.state.currentNote;
         var items = [];
 
+        //delete note then add new one with same fields as current note and locked = !value
         for (var i = 0; i < this.state.notes.length; i++) {
             if (this.state.notes[i].docID !== this.state.currentNote.docID) {
                 items.push(this.state.notes[i]);
@@ -184,7 +192,8 @@ class Main extends Component {
 
     //toggle notes
     pickNote = (noteID) => {
-        console.log(noteID)
+
+        //get noteID from sideBar. Find note in docID and update state so clicked note displays in body
         var cNote;
         var notes = this.state.notes;
         for (var c = 0; c < this.state.notes.length; c++) {
@@ -208,6 +217,8 @@ class Main extends Component {
 
     //updateNote in body and sideBar
     updateNote = (note) => {
+
+        //receive note from body and then make api call
         var items = [];
         for (var i = 0; i < this.state.notes.length; i++) {
             if (this.state.notes[i].docID !== this.state.currentNote.docID) {
@@ -230,7 +241,6 @@ class Main extends Component {
                 filtered: items
             })
         })
-
     }
 
     render() {
@@ -280,9 +290,6 @@ class Main extends Component {
     }
 
 }
-
-
-
 
 export default Main;
 

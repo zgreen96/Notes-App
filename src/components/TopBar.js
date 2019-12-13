@@ -69,8 +69,6 @@ const styles = theme => ({
     }
 });
 
-//var API_URL = "http://localhost:8080";
-
 class TopBar extends React.Component {
     constructor(props) {
         super(props);
@@ -103,15 +101,14 @@ class TopBar extends React.Component {
     //filter items and callback 
     onSearch = (event) => {
         var term = event.target.value;
-        //console.log(term);
+        
         var items = [];
         var newList = [];
         if(term !== ""){
-            items = this.props.data;
+            items = this.props.data;                            //store current notes so filtered list doesn't save over all notes
             newList = items.filter(item => {
                 return (item.title.toLowerCase().includes(term) || item.body.toLowerCase().includes(term));
             })
-            //console.log(newList);
         }
         else{
             newList = this.props.data
@@ -133,7 +130,7 @@ class TopBar extends React.Component {
         }
     }
 
-
+    //List icons and search bar
     render() {
         console.log(this.props.currentNote);
         if (this.props.currentNote.locked === false) {
@@ -144,7 +141,7 @@ class TopBar extends React.Component {
                             <Toolbar>
                                 <Typography variant='h6' color='inherit' id='title'>
                                     My Notes
-                                </Typography>
+                                </Typography>                                                   
                                 <div className={this.classes.buttons}>
                                     <IconButton
                                         className={this.classes.menuButton}
@@ -265,11 +262,7 @@ class TopBar extends React.Component {
             </MuiThemeProvider>
             )
         }
-
     }
-
-
-
 }
 
 export default withStyles(styles, { withTheme: true })(TopBar);

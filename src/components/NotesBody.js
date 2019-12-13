@@ -2,7 +2,6 @@ import React from 'react';
 import { Paper, TextField, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
-
 const styles = theme => ({
     paper: {
         width: '90%',
@@ -44,9 +43,9 @@ class NotesBody extends React.Component {
         this.setState({
             note: someProp.currentNote
         })
-
     }
 
+    //on body change, update current note for Sidebar and database
     handleBodyChange(event) {
         var currentNote = this.state.note;
         currentNote.body = event.target.value
@@ -57,6 +56,7 @@ class NotesBody extends React.Component {
         this.props.handleChange(currentNote);
     }
 
+    //on title change, update current note for Sidebar and database
     handleTitleChange(event) {
         var currentNote = this.state.note;
         currentNote.title = event.target.value
@@ -69,7 +69,7 @@ class NotesBody extends React.Component {
 
     renderNote(currentNote){
         if(currentNote.locked === false){
-            return(
+            return(                                                                         //can shorten this
                 <Paper className={this.classes.paper}>
                         <Grid container spacing={2}>
                             <Grid item xs={9} style={{ textAlign: 'left' }}>
@@ -108,6 +108,7 @@ class NotesBody extends React.Component {
                     </Paper>
             )
         }
+        //disable text fields if note is locked
         else{
             return(
                 <Paper className={this.classes.paper}>
@@ -150,7 +151,6 @@ class NotesBody extends React.Component {
                     </Paper>
             )
         }
-        
     }
 
     render() {
@@ -160,11 +160,7 @@ class NotesBody extends React.Component {
                 {this.renderNote(currentNote)}
             </div>
         )
-
-
     }
-
-
 }
 
 export default withStyles(styles, { withTheme: true })(NotesBody);

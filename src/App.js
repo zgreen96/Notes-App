@@ -54,15 +54,8 @@ class App extends React.Component {
       }
     }
 
-    return <div>Data Loading...</div>;
-
-
-
-
-
-
+    return <div>Data Loading...</div>;                        //can change to centered loading gif of some kind
   }
-
 }
 
 export default App;
