@@ -13,12 +13,13 @@ class App extends React.Component {
     }
   }
 
-  //load notes data
+  //load notes data when component mounts
   async componentDidMount() {
     API_URL = window.location.protocol + '//' + window.location.hostname + '/notes';
     var items = await this.loadNotes();
   }
 
+  //load notes from database and save as state for components to utilize
   async loadNotes() {
     API_URL = window.location.protocol + '//' + window.location.hostname + '/notes';
     await fetch(API_URL)
@@ -38,6 +39,7 @@ class App extends React.Component {
       });
   }
 
+  //call main component
   render() {
     var data = this.state.notes;
     console.log(data);
@@ -53,7 +55,7 @@ class App extends React.Component {
         )
       }
     }
-
+    
     return <div>Data Loading...</div>;                        //can change to centered loading gif of some kind
   }
 }
