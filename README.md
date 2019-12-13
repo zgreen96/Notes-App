@@ -11,4 +11,4 @@ To view project, visit https://notesapp-261216.appspot.com/
 
 #Notes
 
-If you would like to run it locally, I can give you a copy.
+- If you would like to run it locally, I can give you a copy.
